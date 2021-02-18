@@ -10,12 +10,12 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 class DQN(nn.Module):
-    def __init__(self, x, y, z):
+    def __init__(self, input_size):
         super(). __init__ ()
         # here i use a very simple network which consist of only 2 fully connected hidden layrs and an output layer
-        self.fc1 == nn.linear(in_features= x * y * z, out_features=32)
-        self.fc2 == nn.linear(in_features=32, out_features=64)
-        self.out == nn.linear(in_features=64, out_features=30)
+        self.fc1 = nn.linear(in_features= input_size, out_features=32)
+        self.fc2 = nn.linear(in_features=32, out_features=64)
+        self.out = nn.linear(in_features=64, out_features=30)
 
     # implement a forward pass to the network(all pytorch neural network requir forward function)
     def forward(self, t):
@@ -74,11 +74,12 @@ class EpsilonGreedyStrategy():
         return self.end + (self.start - self.end) * \ math.exp(-1. * current_step * self.decay)
 
 class Agent():
-    def __init__(self, stratagy, num_actions, device):
+    def __init__(self, stratagy, num_actions, device, state):
         self.current_step = 0
         self.stratagy = stratagy
         self.num_actions = 30
         self.device = device
+        self.state = np.random.rand(0,3,size=3)
 
     def select_action(self, state, policy_net):
         rate = stratagy.get_exploration_rate(self.current_step)
@@ -89,4 +90,4 @@ class Agent():
 
         else:
             with torch.no_grad():
-                return policy_net(state).argmax(dim=1).to(device) # exploitation
+                return policy_net(input_state).argmax(dim=1).to(device) # exploitation
